@@ -1,0 +1,4 @@
+node_modules/
+freedom_data.sqlite
+.env
+*.log

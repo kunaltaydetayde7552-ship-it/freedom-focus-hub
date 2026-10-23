@@ -1,0 +1,13 @@
+{
+  "name": "freedom-sync-server",
+  "version": "1.0.0",
+  "description": "Central Sync & Routine Server for Freedom Clone",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "pg": "^8.23.1",
+    "ws": "^8.18.0"
+  }
+}

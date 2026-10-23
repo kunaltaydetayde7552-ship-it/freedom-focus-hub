@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freedom - Multi-Device Focus & Productivity Hub</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navbar -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="logo-icon">🌿</div>
+        <div class="logo-text">
+          <h1>Freedom</h1>
+          <span class="badge-free">Self-Hosted • 100% Free</span>
+        </div>
+      </div>
+      <div class="user-profile">
+        <div class="device-sync-indicator" id="syncStatus">
+          <span class="pulse-dot"></span> <span id="onlineDevicesCount">0 Devices Connected</span>
+        </div>
+        <div class="user-pill">
+          <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=freedom" alt="Avatar" class="avatar">
+          <span id="userName">User</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-grid">
+      <!-- Left Column: Active Session & Start Controls -->
+      <section class="main-column">
+        <!-- Active Session Banner (Dynamic) -->
+        <div class="card active-session-card" id="activeSessionCard" style="display: none;">
+          <div class="session-header">
+            <span class="session-badge pulse-active">SESSION ACTIVE</span>
+            <span class="locked-badge" id="lockedBadge">🔒 LOCKED MODE</span>
+          </div>
+          <h2 id="activeSessionTitle">Deep Work Session</h2>
+          <div class="timer-display">
+            <span id="timerMinutes">00</span>:<span id="timerSeconds">00</span>
+          </div>
+          <p class="session-subtext">Blocking websites and apps across all paired devices simultaneously.</p>
+          <div class="session-actions">
+            <button class="btn btn-danger" id="btnStopSession">End Session</button>
+          </div>
+        </div>
+
+        <!-- Start New Session Card -->
+        <div class="card start-session-card" id="startSessionCard">
+          <div class="card-header">
+            <h2>Start a Focus Session</h2>
+            <p>Lock distracting sites and applications across your PC and Phone.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Session Name</label>
+            <input type="text" id="sessionNameInput" placeholder="e.g. Deep Work, Study, Writing" value="Focused Sprint">
+          </div>
+
+          <div class="form-group">
+            <label>Select Duration</label>
+            <div class="duration-pills">
+              <button class="pill-btn" data-min="15">15 min</button>
+              <button class="pill-btn active" data-min="25">25 min (Pomodoro)</button>
+              <button class="pill-btn" data-min="45">45 min</button>
+              <button class="pill-btn" data-min="60">1 Hour</button>
+              <button class="pill-btn" data-min="120">2 Hours</button>
+            </div>
+            <input type="number" id="customDurationInput" class="custom-duration" placeholder="Or custom minutes" min="1" max="1440">
+          </div>
+
+          <div class="form-group">
+            <label>Select Blocklist</label>
+            <select id="sessionBlocklistSelect" class="form-select"></select>
+          </div>
+
+          <div class="form-toggle-row">
+            <div class="toggle-info">
+              <strong>🔒 Locked Mode (Strict Guardian)</strong>
+              <span>Cannot pause, stop, or edit blocklists until the timer finishes.</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="lockedModeToggle" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <button class="btn btn-primary btn-large" id="btnStartSession">
+            🚀 Start Session on All Devices
+          </button>
+        </div>
+
+        <!-- Focus Audio Soundscapes -->
+        <div class="card audio-card">
+          <div class="card-header">
+            <h3>🎧 Focus Ambient Sounds</h3>
+            <p>Built-in soundscapes to drown out distractions.</p>
+          </div>
+          <div class="audio-controls">
+            <button class="audio-btn" data-sound="rain">🌧️ Gentle Rain</button>
+            <button class="audio-btn" data-sound="cafe">☕ Coffee Shop</button>
+            <button class="audio-btn" data-sound="waves">🌊 Ocean Waves</button>
+            <button class="audio-btn" data-sound="white">📻 White Noise</button>
+            <button class="audio-btn btn-stop-audio" id="btnStopAudio" style="display:none;">⏹️ Stop</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Devices, Routines & Blocklists -->
+      <aside class="sidebar-column">
+        <!-- Connected Devices Card -->
+        <div class="card devices-card">
+          <div class="card-header-flex">
+            <h3>📱 Paired Devices</h3>
+            <span class="device-pill-total" id="devicesCountBadge">0 Total</span>
+          </div>
+          <div class="device-list" id="devicesList">
+            <div class="empty-state">No devices connected yet. Launch the Windows or Android client to connect.</div>
+          </div>
+        </div>
+
+        <!-- Routines / Schedules -->
+        <div class="card routines-card">
+          <div class="card-header-flex">
+            <h3>⏰ Daily Routines (Schedules)</h3>
+            <button class="btn-sm btn-outline" id="btnOpenNewRoutineModal">+ New</button>
+          </div>
+          <p class="subtext">Auto-start focus blocks on recurring days & times.</p>
+          <div class="routines-list" id="routinesList"></div>
+        </div>
+
+        <!-- Blocklists Management -->
+        <div class="card blocklists-card">
+          <div class="card-header-flex">
+            <h3>🛡️ Blocklists</h3>
+            <button class="btn-sm btn-outline" id="btnOpenNewBlocklistModal">+ New</button>
+          </div>
+          <div class="blocklists-list" id="blocklistsList"></div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Modal for New Routine -->
+    <div class="modal-overlay" id="routineModal" style="display:none;">
+      <div class="modal-content">
+        <h3>Add Recurring Routine</h3>
+        <div class="form-group">
+          <label>Routine Name</label>
+          <input type="text" id="routineNameInput" placeholder="e.g. Work Morning Sprint">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Time</label>
+            <input type="time" id="routineStartTime" value="09:00">
+          </div>
+          <div class="form-group">
+            <label>End Time</label>
+            <input type="time" id="routineEndTime" value="12:00">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Repeat on Days</label>
+          <div class="day-selectors" id="daySelectors">
+            <button type="button" class="day-btn" data-day="1">M</button>
+            <button type="button" class="day-btn" data-day="2">T</button>
+            <button type="button" class="day-btn" data-day="3">W</button>
+            <button type="button" class="day-btn" data-day="4">T</button>
+            <button type="button" class="day-btn" data-day="5">F</button>
+            <button type="button" class="day-btn" data-day="6">S</button>
+            <button type="button" class="day-btn" data-day="0">S</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Blocklist to Apply</label>
+          <select id="routineBlocklistSelect" class="form-select"></select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="btnCloseRoutineModal">Cancel</button>
+          <button class="btn btn-primary" id="btnSaveRoutine">Save Routine</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Edit/New Blocklist -->
+    <div class="modal-overlay" id="blocklistModal" style="display:none;">
+      <div class="modal-content">
+        <h3>Edit Blocklist</h3>
+        <input type="hidden" id="editBlocklistId">
+        <div class="form-group">
+          <label>Blocklist Name</label>
+          <input type="text" id="blocklistNameInput" placeholder="e.g. Social Media & Gaming">
+        </div>
+        <div class="form-group">
+          <label>Websites to Block (Domains separated by commas or lines)</label>
+          <textarea id="blocklistDomainsInput" rows="3" placeholder="facebook.com, instagram.com, youtube.com, reddit.com"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Windows Desktop Apps (Executable names)</label>
+          <textarea id="blocklistDesktopAppsInput" rows="2" placeholder="discord.exe, steam.exe, spotify.exe"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Android Mobile Apps (Package IDs)</label>
+          <textarea id="blocklistMobileAppsInput" rows="2" placeholder="com.instagram.android, com.zhiliaoapp.musically"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="btnCloseBlocklistModal">Cancel</button>
+          <button class="btn btn-primary" id="btnSaveBlocklist">Save Blocklist</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
