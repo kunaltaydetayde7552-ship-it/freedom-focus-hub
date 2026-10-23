@@ -51,8 +51,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Connect to Cloud Sync Server (replace with your server IP/domain)
-        val serverUrl = "ws://10.0.2.2:5050/ws" // Local emulator or your local LAN IP
+        // Connect to Cloud Sync Server (Live on Render)
+        val serverUrl = "wss://freedom-focus-hub.onrender.com/ws"
         syncClient = SyncWebSocketClient(this, serverUrl)
         syncClient.connect()
         statusText.text = "Connected to Freedom Hub (Cloud Sync Active)"

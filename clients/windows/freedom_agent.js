@@ -7,7 +7,7 @@ const path = require('node:path');
 const { exec, execSync } = require('node:child_process');
 const os = require('node:os');
 
-const SERVER_WS_URL = process.env.FREEDOM_SERVER_URL || 'ws://localhost:5050/ws';
+const SERVER_WS_URL = process.env.FREEDOM_SERVER_URL || 'wss://freedom-focus-hub.onrender.com/ws';
 const HOSTS_PATH = process.env.SYSTEMROOT 
   ? path.join(process.env.SYSTEMROOT, 'System32', 'drivers', 'etc', 'hosts')
   : 'C:\\Windows\\System32\\drivers\\etc\\hosts';
