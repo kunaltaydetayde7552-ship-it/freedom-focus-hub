@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Freedom - Multi-Device Focus & Productivity Hub</title>
+  <title>Freedom — Multi-Device Focus Hub</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="app-container">
@@ -17,7 +17,7 @@
         <div class="logo-icon">🌿</div>
         <div class="logo-text">
           <h1>Freedom</h1>
-          <span class="badge-free">Self-Hosted • 100% Free</span>
+          <span class="badge-free">Self-Hosted • 100% Free • Multi-Device</span>
         </div>
       </div>
       <div class="user-profile">
@@ -30,6 +30,18 @@
         </div>
       </div>
     </header>
+
+    <!-- Extension Banner Notice -->
+    <div class="extension-notice-banner">
+      <div class="notice-content">
+        <span class="notice-icon">🛡️</span>
+        <div>
+          <strong>Strict Web Protection (Freedom Extension)</strong>
+          <p>For DoH-immune redirection (YouTube, Instagram) directly to the signature Green Screen, load the Freedom Focus Guard extension in Chrome/Edge.</p>
+        </div>
+      </div>
+      <a href="https://github.com/kunaltaydetayde7552-ship-it/freedom-focus-hub/tree/main/extension" target="_blank" class="btn-sm btn-outline">Extension Guide →</a>
+    </div>
 
     <main class="dashboard-grid">
       <!-- Left Column: Active Session & Start Controls -->
@@ -74,9 +86,12 @@
             <input type="number" id="customDurationInput" class="custom-duration" placeholder="Or custom minutes" min="1" max="1440">
           </div>
 
+          <!-- Pre-Curated Category Selection -->
           <div class="form-group">
-            <label>Select Blocklist</label>
-            <select id="sessionBlocklistSelect" class="form-select"></select>
+            <label>Select Distraction Category</label>
+            <div class="category-cards-grid" id="categoryGrid">
+              <!-- Dynamically populated categories -->
+            </div>
           </div>
 
           <div class="form-toggle-row">
@@ -137,7 +152,7 @@
         <!-- Blocklists Management -->
         <div class="card blocklists-card">
           <div class="card-header-flex">
-            <h3>🛡️ Blocklists</h3>
+            <h3>🛡️ Blocklists & Apps</h3>
             <button class="btn-sm btn-outline" id="btnOpenNewBlocklistModal">+ New</button>
           </div>
           <div class="blocklists-list" id="blocklistsList"></div>
@@ -176,7 +191,7 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Blocklist to Apply</label>
+          <label>Category to Apply</label>
           <select id="routineBlocklistSelect" class="form-select"></select>
         </div>
         <div class="modal-actions">
@@ -189,15 +204,15 @@
     <!-- Modal for Edit/New Blocklist -->
     <div class="modal-overlay" id="blocklistModal" style="display:none;">
       <div class="modal-content">
-        <h3>Edit Blocklist</h3>
+        <h3>Edit Category / Blocklist</h3>
         <input type="hidden" id="editBlocklistId">
         <div class="form-group">
-          <label>Blocklist Name</label>
+          <label>Category Name</label>
           <input type="text" id="blocklistNameInput" placeholder="e.g. Social Media & Gaming">
         </div>
         <div class="form-group">
           <label>Websites to Block (Domains separated by commas or lines)</label>
-          <textarea id="blocklistDomainsInput" rows="3" placeholder="facebook.com, instagram.com, youtube.com, reddit.com"></textarea>
+          <textarea id="blocklistDomainsInput" rows="3" placeholder="youtube.com, instagram.com, reddit.com"></textarea>
         </div>
         <div class="form-group">
           <label>Windows Desktop Apps (Executable names)</label>
@@ -205,7 +220,7 @@
         </div>
         <div class="form-group">
           <label>Android Mobile Apps (Package IDs)</label>
-          <textarea id="blocklistMobileAppsInput" rows="2" placeholder="com.instagram.android, com.zhiliaoapp.musically"></textarea>
+          <textarea id="blocklistMobileAppsInput" rows="2" placeholder="com.google.android.youtube, com.instagram.android"></textarea>
         </div>
         <div class="modal-actions">
           <button class="btn btn-outline" id="btnCloseBlocklistModal">Cancel</button>

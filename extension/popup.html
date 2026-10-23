@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 280px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d1117;
+      color: #f0f6fc;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .logo { font-size: 20px; }
+    h2 { font-size: 16px; margin: 0; }
+    .status-box {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .status-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #3fb950;
+      margin-bottom: 4px;
+    }
+    .status-inactive { color: #8b949e; }
+    .timer { font-size: 24px; font-weight: 800; margin: 8px 0; font-variant-numeric: tabular-nums; }
+    .locked-badge {
+      display: inline-block;
+      font-size: 11px;
+      background: #f0883e;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .btn {
+      width: 100%;
+      background: #2ea043;
+      color: #fff;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo">🌿</span>
+    <h2>Freedom Focus Guard</h2>
+  </div>
+
+  <div class="status-box">
+    <div id="statusLabel" class="status-text">Checking status...</div>
+    <div id="timerDisplay" class="timer">--:--</div>
+    <div id="lockedBadge" class="locked-badge" style="display:none;">🔒 LOCKED MODE</div>
+  </div>
+
+  <a href="https://freedom-focus-hub.onrender.com" target="_blank" class="btn">Open Dashboard</a>
+
+  <script src="popup.js"></script>
+</body>
+</html>

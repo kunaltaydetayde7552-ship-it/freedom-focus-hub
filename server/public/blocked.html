@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freedom — You've Got Your Freedom Back!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d3829 0%, #114c38 50%, #092c20 100%);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Ambient background glow */
+    .bg-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(74, 222, 128, 0.15) 0%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 20px;
+      border-radius: 40px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .logo-badge span.icon {
+      font-size: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 56px;
+      font-weight: 600;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: #f0fdf4;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 38px; }
+    }
+
+    p.blocked-message {
+      font-size: 20px;
+      color: #bbf7d0;
+      margin-bottom: 32px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .target-highlight {
+      font-weight: 700;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 2px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Timer card */
+    .timer-card {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 20px 32px;
+      display: inline-block;
+      margin-bottom: 36px;
+    }
+
+    .timer-label {
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #86efac;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .timer-value {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      font-variant-numeric: tabular-nums;
+      color: #ffffff;
+    }
+
+    /* Quote box */
+    .quote-box {
+      font-style: italic;
+      color: #dcfce7;
+      font-size: 16px;
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+      border-left: 2px solid #4ade80;
+      padding-left: 16px;
+      text-align: left;
+    }
+
+    .btn-dashboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      color: #0d3829;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 30px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .btn-dashboard:hover {
+      background: #f0fdf4;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <div class="container">
+    <div class="logo-badge">
+      <span class="icon">🌿</span>
+      <span>Freedom Active</span>
+    </div>
+
+    <h1>You've got your freedom back!</h1>
+
+    <p class="blocked-message">
+      <span class="target-highlight" id="blockedTarget">This website</span>
+      is blocked to help you stay focused on what truly matters.
+    </p>
+
+    <div class="timer-card" id="timerCard">
+      <div class="timer-label">Time Remaining in Session</div>
+      <div class="timer-value" id="timerDisplay">--:--</div>
+    </div>
+
+    <div class="quote-box" id="quoteText">
+      "The successful warrior is the average man, with laser-like focus." — Bruce Lee
+    </div>
+
+    <div>
+      <a href="/" class="btn-dashboard">
+        <span>Go to Freedom Dashboard</span>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Extract target domain from query param if provided
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get('site') || params.get('target') || 'This website';
+    document.getElementById('blockedTarget').textContent = target;
+
+    // Inspiring focus quotes
+    const quotes = [
+      '"The successful warrior is the average man, with laser-like focus." — Bruce Lee',
+      '"Deep work is the ability to focus without distraction on a cognitively demanding task." — Cal Newport',
+      '"Starve your distractions, feed your focus." — Anonymous',
+      '"It is during our darkest moments that we must focus to see the light." — Aristotle',
+      '"You will never reach your destination if you stop and throw stones at every dog that barks." — Winston Churchill'
+    ];
+    document.getElementById('quoteText').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+
+    // Fetch remaining time from server
+    async function updateTimer() {
+      try {
+        const res = await fetch('/api/session/active');
+        const data = await res.json();
+        if (data.active && data.remaining_seconds > 0) {
+          let sec = data.remaining_seconds;
+          const mins = Math.floor(sec / 60);
+          const secs = sec % 60;
+          document.getElementById('timerDisplay').textContent = 
+            String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+        } else {
+          document.getElementById('timerDisplay').textContent = "Focus Mode";
+        }
+      } catch (e) {
+        document.getElementById('timerDisplay').textContent = "Focus Mode";
+      }
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  </script>
+</body>
+</html>

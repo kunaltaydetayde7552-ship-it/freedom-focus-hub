@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Freedom Focus Guard",
+  "version": "1.0.0",
+  "description": "Enforces strict website blocking with signature Freedom Green Screen redirects, immune to DoH and QUIC.",
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "storage",
+    "alarms",
+    "webNavigation",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Freedom Focus Guard",
+    "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  }
+}

@@ -3,6 +3,7 @@ let socket = null;
 let activeSessionInterval = null;
 let currentRemainingSeconds = 0;
 let currentBlocklists = [];
+let selectedCategoryId = 'cat_youtube_streaming';
 let audioContext = null;
 let currentAudioNode = null;
 
@@ -49,7 +50,7 @@ function setupWebSocket() {
   };
 
   socket.onclose = () => {
-    setTimeout(setupWebSocket, 3000); // Reconnect
+    setTimeout(setupWebSocket, 3000);
   };
 }
 
@@ -99,19 +100,30 @@ async function loadDevices() {
   } catch (e) {}
 }
 
-// Load Blocklists
+// Load Blocklists & Populate Categories Grid
 async function loadBlocklists() {
   try {
     const res = await fetch('/api/blocklists');
     const data = await res.json();
     currentBlocklists = data.blocklists || [];
 
-    const select = document.getElementById('sessionBlocklistSelect');
+    const categoryGrid = document.getElementById('categoryGrid');
     const routineSelect = document.getElementById('routineBlocklistSelect');
     const listDiv = document.getElementById('blocklistsList');
 
-    select.innerHTML = currentBlocklists.map(b => `<option value="${b.id}">${escapeHtml(b.name)}</option>`).join('');
     routineSelect.innerHTML = currentBlocklists.map(b => `<option value="${b.id}">${escapeHtml(b.name)}</option>`).join('');
+
+    // Render Categories
+    categoryGrid.innerHTML = currentBlocklists.map((b, idx) => {
+      const isSel = (b.id === selectedCategoryId) || (!selectedCategoryId && idx === 0);
+      if (isSel) selectedCategoryId = b.id;
+      return `
+        <div class="category-card ${isSel ? 'selected' : ''}" data-id="${b.id}" onclick="selectCategory('${b.id}')">
+          <strong>${escapeHtml(b.name)}</strong>
+          <span>${b.domains.length} Sites • ${b.desktop_apps.length} Apps • ${b.mobile_apps.length} Mobile</span>
+        </div>
+      `;
+    }).join('');
 
     listDiv.innerHTML = currentBlocklists.map(b => `
       <div class="blocklist-item">
@@ -124,6 +136,17 @@ async function loadBlocklists() {
     `).join('');
   } catch (e) {}
 }
+
+window.selectCategory = function(id) {
+  selectedCategoryId = id;
+  document.querySelectorAll('.category-card').forEach(c => {
+    if (c.getAttribute('data-id') === id) {
+      c.classList.add('selected');
+    } else {
+      c.classList.remove('selected');
+    }
+  });
+};
 
 // Load Routines
 async function loadRoutines() {
@@ -218,7 +241,6 @@ function clearActiveSession() {
 
 // UI Handlers
 function setupUIHandlers() {
-  // Duration Pills
   document.querySelectorAll('.pill-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
@@ -243,7 +265,6 @@ function setupUIHandlers() {
       if (activePill) duration = Number(activePill.getAttribute('data-min'));
     }
 
-    const blocklistId = document.getElementById('sessionBlocklistSelect').value;
     const lockedMode = document.getElementById('lockedModeToggle').checked;
 
     const res = await fetch('/api/session/start', {
@@ -252,7 +273,7 @@ function setupUIHandlers() {
       body: JSON.stringify({
         name,
         duration_minutes: duration,
-        blocklist_id: blocklistId,
+        blocklist_id: selectedCategoryId || 'cat_youtube_streaming',
         locked_mode: lockedMode,
       }),
     });
@@ -281,7 +302,6 @@ function setupUIHandlers() {
     document.getElementById('routineModal').style.display = 'none';
   });
 
-  // Day buttons
   document.querySelectorAll('.day-btn').forEach(btn => {
     btn.addEventListener('click', () => btn.classList.toggle('selected'));
   });
@@ -340,7 +360,7 @@ function setupUIHandlers() {
     loadBlocklists();
   });
 
-  // Audio Soundscapes (Web Audio API Synthesizer - 100% offline)
+  // Focus Audio
   document.querySelectorAll('.audio-btn[data-sound]').forEach(btn => {
     btn.addEventListener('click', () => {
       const sound = btn.getAttribute('data-sound');
@@ -350,7 +370,6 @@ function setupUIHandlers() {
   document.getElementById('btnStopAudio').addEventListener('click', stopAudio);
 }
 
-// Edit blocklist helper
 window.editBlocklist = function(id) {
   const b = currentBlocklists.find(x => x.id === id);
   if (!b) return;
@@ -373,12 +392,10 @@ function escapeHtml(str) {
   return String(str || '').replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m]));
 }
 
-// Focus Audio Synthesizer (White noise / Rain soundscape generator)
 function playSynthesizedSound(type, btn) {
   stopAudio();
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-  // Create White/Pink noise buffer
   const bufferSize = audioContext.sampleRate * 2;
   const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
   const data = buffer.getChannelData(0);
@@ -390,7 +407,6 @@ function playSynthesizedSound(type, btn) {
   whiteNoise.buffer = buffer;
   whiteNoise.loop = true;
 
-  // Filter based on sound type
   const filter = audioContext.createBiquadFilter();
   if (type === 'rain') {
     filter.type = 'lowpass';

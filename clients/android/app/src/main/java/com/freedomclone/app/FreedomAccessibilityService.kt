@@ -7,9 +7,10 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
 /**
- * Freedom Accessibility Service
- * 1. Monitors active foreground apps and terminates/closes blocked packages.
- * 2. Inspects supported mobile browsers (Chrome, Edge, Firefox) to block URLs.
+ * Freedom High-Strictness Accessibility Service
+ * 1. Detects distracting foreground apps (YouTube, Instagram, TikTok) instantly.
+ * 2. Force-closes them to home screen and brings up the signature Green Screen Overlay.
+ * 3. Inspects browser URL bars (Chrome, Edge, Brave, Firefox) to block websites.
  */
 class FreedomAccessibilityService : AccessibilityService() {
 
@@ -17,15 +18,17 @@ class FreedomAccessibilityService : AccessibilityService() {
         var isSessionActive: Boolean = false
         var lockedMode: Boolean = false
         var blockedPackages: Set<String> = hashSetOf(
+            "com.google.android.youtube",
             "com.instagram.android",
             "com.zhiliaoapp.musically", // TikTok
             "com.twitter.android",
             "com.reddit.frontpage",
-            "com.google.android.youtube",
-            "com.facebook.katana"
+            "com.facebook.katana",
+            "com.netflix.mediaclient"
         )
         var blockedDomains: Set<String> = hashSetOf(
-            "instagram.com", "facebook.com", "tiktok.com", "twitter.com", "x.com", "reddit.com", "youtube.com"
+            "youtube.com", "youtu.be", "m.youtube.com", "instagram.com", "facebook.com",
+            "tiktok.com", "twitter.com", "x.com", "reddit.com", "netflix.com"
         )
     }
 
@@ -35,7 +38,7 @@ class FreedomAccessibilityService : AccessibilityService() {
             eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
             feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             flags = AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
-            notificationTimeout = 100
+            notificationTimeout = 50 // Ultra-fast 50ms reaction
         }
         serviceInfo = info
     }
@@ -45,28 +48,27 @@ class FreedomAccessibilityService : AccessibilityService() {
 
         val packageName = event.packageName?.toString() ?: return
 
-        // 1. Check if the newly opened app is in the Blocked Packages list
+        // 1. Strict App Interception
         if (blockedPackages.contains(packageName)) {
-            // Intercept app: Go directly to home screen
+            // Force return to Home Screen immediately
             performGlobalAction(GLOBAL_ACTION_HOME)
 
-            // Launch the overlay activity explaining the block
+            // Launch signature Fullscreen Green Screen Overlay
             val intent = Intent(this, BlockedOverlayActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                putExtra("APP_NAME", packageName)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_ANIMATION
+                putExtra("APP_NAME", getFriendlyAppName(packageName))
             }
             startActivity(intent)
             return
         }
 
-        // 2. Check Browser URL bar (Chrome, Edge, Firefox, Brave)
+        // 2. Strict Browser URL Interception
         if (isBrowserPackage(packageName)) {
             val rootNode = rootInActiveWindow ?: return
             val currentUrl = findUrlInBrowserNode(rootNode)
             if (currentUrl != null) {
                 for (domain in blockedDomains) {
                     if (currentUrl.contains(domain, ignoreCase = true)) {
-                        // Press BACK or Home to block browser distraction
                         performGlobalAction(GLOBAL_ACTION_BACK)
                         val intent = Intent(this, BlockedOverlayActivity::class.java).apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -77,6 +79,19 @@ class FreedomAccessibilityService : AccessibilityService() {
                     }
                 }
             }
+        }
+    }
+
+    private fun getFriendlyAppName(pkg: String): String {
+        return when {
+            pkg.contains("youtube") -> "YouTube"
+            pkg.contains("instagram") -> "Instagram"
+            pkg.contains("zhiliaoapp") || pkg.contains("tiktok") -> "TikTok"
+            pkg.contains("twitter") -> "X (Twitter)"
+            pkg.contains("facebook") -> "Facebook"
+            pkg.contains("reddit") -> "Reddit"
+            pkg.contains("netflix") -> "Netflix"
+            else -> pkg
         }
     }
 
